@@ -23,4 +23,7 @@ module.exports = merge(common, {
       },
     ],
   },
+  devServer: {
+    open: true,
+  },
 });
