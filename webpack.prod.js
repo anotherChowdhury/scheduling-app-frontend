@@ -37,7 +37,7 @@ module.exports = merge(common, {
     rules: [
       {
         test: /\.scss$/, // regular expression /regex/
-        //scss-loader converts into  javascript code,style loader injects it into the dom
+        //scss-loader converts into  sass to css,copile css into js,
         use: [
           MiniCssExtractPlugin.loader, // 3. spits a new file
           'css-loader', //2. compiles css into javascript

@@ -2,6 +2,7 @@ const common = require('./webpack.common');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { merge } = require('webpack-merge');
 module.exports = merge(common, {
+  devtool: 'source-map',
   mode: 'development', //  doenst' minify or compress
   plugins: [
     new HtmlWebpackPlugin({
@@ -25,5 +26,11 @@ module.exports = merge(common, {
   },
   devServer: {
     open: true,
+    historyApiFallback: true,
+    // proxy: {
+    //   '/': {
+    //     target: 'http://localhost:5000/',
+    //   },
+    // },
   },
 });
