@@ -20,16 +20,19 @@ function Login() {
     const { email, password } = data;
     console.log(email, password);
 
-    const response = await Axios.post('http://localhost:5000/owner/login', {
+    const response = await Axios.post('/api/owner/login', {
       email,
       password,
     });
     if (response.request.status === 200) {
       localStorage.setItem('token', response.data.token);
-      return <Redirect to="/admin" />;
+      setData({ redirect: true });
+    } else {
+      setData({ ...data, error: true });
     }
-    setData({ ...data, error: true });
   };
+
+  if (data.redirect) return <Redirect to="/admin" />;
   return (
     <div className="login">
       <form className="login-form" onSubmit={onSubmit}>

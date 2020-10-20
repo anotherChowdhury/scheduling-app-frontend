@@ -9,6 +9,7 @@ function Register() {
     password: '',
     warning: false,
     error: false,
+    redirect: false,
   });
 
   const onChange = (e) => {
@@ -29,28 +30,28 @@ function Register() {
     const { name, email, password } = data;
     console.log({ name, email, password });
     try {
-      const response = await axios.post('http://localhost:5000/owner/signup', {
+      const response = await axios.post('/api/owner/signup', {
         name,
         email,
         password,
       });
       console.log(response.status);
       console.log(typeof response.status);
-      if (response.status === 201) return <Redirect to="/login" />;
+      if (response.status === 201) setData({ ...data, redirect: true });
     } catch (err) {
-      setData({ ...data, error: true });
+      console.log(err);
+      console.log(err.response);
+      setData({ ...data, error: err.response.data.message });
     }
   };
+
+  if (data.redirect) return <Redirect to="/login" />;
 
   return (
     <div className="signup">
       <form className="signup-form" onSubmit={onSubmit}>
         {data.warning ? <p className="warning">Passwords don't match</p> : ''}
-        {data.error
-          ? setInterval(() => {
-              <p className="warning">Something went wrong, Please try again</p>;
-            }, 5000)
-          : ''}
+        {data.error ? <p className="warning">{data.error}</p> : ''}
 
         <input
           type="text"
