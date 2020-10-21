@@ -1,3 +1,6 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable react/jsx-indent-props */
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable comma-dangle */
 import Axios from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -15,6 +18,7 @@ function Dashboard() {
     showToday: false,
     showAll: false,
     showForm: false,
+    showEvents: false,
   });
 
   useEffect(() => {
@@ -22,7 +26,7 @@ function Dashboard() {
       const response = await Axios.get('/api/owner/dashboard', {
         headers: { Authorization: localStorage.getItem('token') },
       });
-
+      console.log(response.data.events);
       setData({
         ...data,
         allAppointments: response.data.all,
@@ -34,13 +38,17 @@ function Dashboard() {
     getData();
   }, []);
 
-  const showToday = () => setData({ ...data, showToday: true, showAll: false });
-  const showAll = () => setData({ ...data, showToday: false, showAll: true });
+  const showToday = () =>
+    setData({ ...data, showToday: !data.showToday, showAll: false, showEvents: false, showForm: false });
+
+  const showAll = () =>
+    setData({ ...data, showToday: false, showAll: !data.showAll, showEvents: false, showForm: false });
+
   const showForm = () => {
-    console.log(data.showForm);
-    setData({ ...data, showForm: !data.showForm });
-    console.log(data.showForm);
+    setData({ ...data, showForm: !data.showForm, showToday: false, showAll: false, showEvents: false });
   };
+  const showEvents = () =>
+    setData({ ...data, showToday: false, showAll: false, showEvents: !data.showEvents, showForm: false });
 
   if (data.loading) return <div>Loading</div>;
 
@@ -49,8 +57,10 @@ function Dashboard() {
       let emailValue = '';
       if (email) emailValue = `?email=${email}`;
       await Axios.delete(`/api/appointment/${id}${emailValue}`);
-      if (new Date() == new Date(date)) {
-        let appointmentsForTheDay;
+      let currentDate = new Date();
+      currentDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
+      if (currentDate == date) {
+        const appointmentsForTheDay = [];
         const allAppointments = data.allAppointments.filter((appointment) => {
           if (appointment.date == date && appointment.id !== id) {
             appointmentsForTheDay.push(appointment);
@@ -58,6 +68,8 @@ function Dashboard() {
 
           return appointment.id !== id;
         });
+
+        console.log(appointmentsForTheDay);
 
         setData({
           ...data,
@@ -84,13 +96,9 @@ function Dashboard() {
     try {
       await Axios.delete(`/api/event/${id}`);
       const events = data.events.filter((event) => event.id !== id);
-      const allAppointments = data.allAppointments.filter(
-        (appointment) => appointment.event !== id
-      );
+      const allAppointments = data.allAppointments.filter((appointment) => appointment.event !== id);
 
-      const appointmentsForTheDay = data.appointmentsFortheDay.filter(
-        (appointment) => appointment.event !== id
-      );
+      const appointmentsForTheDay = data.appointmentsFortheDay.filter((appointment) => appointment.event !== id);
       setData({
         ...data,
         events: events,
@@ -111,28 +119,35 @@ function Dashboard() {
   const appointmentRescheduled = (oldId, rescheduledAppointment) => {
     let { allAppointments } = data;
     const appointmentsForTheDay = [];
+    let currentDate = new Date();
+    currentDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
+    allAppointments = allAppointments.filter((appointment) => {
+      if (appointment.id !== oldId && appointment.date == currentDate) appointmentsForTheDay.push(appointment);
+      return appointment.id !== oldId;
+    });
 
-    if (new Date() == new Date(rescheduledAppointment.date)) {
-      allAppointments = allAppointments.filter((appointment) => {
-        if (
-          // eslint-disable-next-line operator-linebreak
-          appointment.date == rescheduledAppointment &&
-          rescheduledAppointment.id !== oldId
-        ) {
-          appointmentsForTheDay.push(appointment);
-        }
-
-        return appointment.id !== oldId;
-      });
-
-      setData({
-        ...data,
-        allAppointments: allAppointments,
-        appointmentsForTheDay: appointmentsForTheDay,
-      });
+    if (currentDate == rescheduledAppointment.date) {
+      appointmentsForTheDay.push(rescheduledAppointment);
     }
+    allAppointments.push(rescheduledAppointment);
+    setData({
+      ...data,
+      allAppointments: allAppointments,
+      appointmentsForTheDay: appointmentsForTheDay,
+    });
   };
 
+  const eventEdited = (event) => {
+    const { events } = data;
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < events.length; i++) {
+      console.log(events[i]);
+      if (events[i].id == event.id) events[i] = event;
+      break;
+    }
+    console.log(events);
+    setData({ ...data, events: events });
+  };
   return (
     <div>
       <h1>Welcome to Admin Panel</h1>
@@ -143,20 +158,26 @@ function Dashboard() {
         Add Event{' '}
       </button>
       <button onClick={showAll} type="button">
-        All Appoiyntments
+        All Appointments
       </button>
       <button onClick={showToday} type="button">
         Today's Appointments
       </button>
+      <button onClick={showEvents} type="button">
+        Show All Events
+      </button>
 
       {data.showForm ? <AddEvent toggle={showForm} add={addEvent} /> : ''}
-      {data.events.map((event, idx) => (
-        <Event key={`event${idx + 1}`} event={event} delete={deleteEvent} />
-      ))}
+      {data.showEvents
+        ? data.events.map((event, idx) => (
+            <Event key={`event${idx + 1}`} event={event} delete={deleteEvent} edit={eventEdited} />
+          ))
+        : ''}
 
       {data.showAll
         ? data.allAppointments.map((appointment) => (
             <Appointment
+              key={appointment.id}
               appointment={appointment}
               delete={deleteAppointment}
               reschedule={appointmentRescheduled}
@@ -167,6 +188,7 @@ function Dashboard() {
       {data.showToday
         ? data.appointmentsFortheDay.map((appointment) => (
             <Appointment
+              key={appointment.id}
               appointment={appointment}
               delete={deleteAppointment}
               reschedule={appointmentRescheduled}

@@ -4,20 +4,22 @@ import React, { useState } from 'react';
 import Axios from 'axios';
 
 // eslint-disable-next-line no-unused-vars
-function AddEvent({ toggle: showForm, add: addEvent }) {
+function EditEvent({ event: { id, name, price, duration, schedule: schedules, capacity, eventEdited, setEdit } }) {
+  console.log(name, price, duration, schedules, capacity);
+
   const [data, setData] = useState({
-    name: '',
-    price: '',
-    duration: '',
-    capacity: '',
-    schedule: {},
-    SUN: true,
-    MON: true,
-    TUE: true,
-    WED: true,
-    THU: true,
-    FRI: true,
-    SAT: true,
+    name: name,
+    price: price,
+    duration: duration,
+    capacity: capacity,
+    schedule: schedules,
+    SUN: !schedules.SUN,
+    MON: !schedules.MON,
+    TUE: !schedules.TUE,
+    WED: !schedules.WED,
+    THU: !schedules.THU,
+    FRI: !schedules.FRI,
+    SAT: !schedules.SAT,
   });
 
   const onChange = (e) => setData({ ...data, [e.target.name]: e.target.value });
@@ -54,10 +56,10 @@ function AddEvent({ toggle: showForm, add: addEvent }) {
       schedule[key] = slots;
     });
 
-    console.log(data.name, data.price, data.duration, data.capacity, schedule);
+    console.log(schedule);
     try {
-      const response = await Axios.post(
-        '/api/event/new',
+      const response = await Axios.put(
+        `/api/event/${id}`,
         {
           name: data.name,
           price: data.price,
@@ -71,9 +73,9 @@ function AddEvent({ toggle: showForm, add: addEvent }) {
           },
         }
       );
-      console.log(response.data);
-      addEvent(response.data);
-      showForm();
+      console.log(response.data.updatedEvent);
+      eventEdited(response.data.updatedEvent);
+      setEdit(false);
     } catch (err) {
       console.log(err);
     }
@@ -110,7 +112,7 @@ function AddEvent({ toggle: showForm, add: addEvent }) {
         </div>
         <div className="form-element">
           <div className="day">
-            <input type="checkbox" name="SUN" id="SUN" onClick={onClicked} />
+            <input type="checkbox" name="SUN" id="SUN" onChange={onClicked} checked={!data.SUN} />
             <label htmlFor="SUN"> Sunday </label>
             <input
               type="text"
@@ -123,7 +125,7 @@ function AddEvent({ toggle: showForm, add: addEvent }) {
             />
           </div>
           <div className="day">
-            <input type="checkbox" name="MON" id="MON" onClick={onClicked} />
+            <input type="checkbox" name="MON" id="MON" onChange={onClicked} checked={!data.MON} />
 
             <label htmlFor="MON"> Monday </label>
             <input
@@ -137,7 +139,7 @@ function AddEvent({ toggle: showForm, add: addEvent }) {
           </div>
 
           <div className="day">
-            <input type="checkbox" name="TUE" id="TUE" onClick={onClicked} />
+            <input type="checkbox" name="TUE" id="TUE" onChange={onClicked} checked={!data.TUE} />
 
             <label htmlFor="TUE"> Tuesday </label>
             <input
@@ -150,7 +152,7 @@ function AddEvent({ toggle: showForm, add: addEvent }) {
             />
           </div>
           <div className="day">
-            <input type="checkbox" name="WED" id="WED" onClick={onClicked} />
+            <input type="checkbox" name="WED" id="WED" onChange={onClicked} checked={!data.WED} />
 
             <label htmlFor="WED"> Wednesday </label>
             <input
@@ -164,7 +166,7 @@ function AddEvent({ toggle: showForm, add: addEvent }) {
           </div>
 
           <div className="day">
-            <input type="checkbox" name="THU" id="THU" onClick={onClicked} />
+            <input type="checkbox" name="THU" id="THU" onChange={onClicked} checked={!data.THU} />
 
             <label htmlFor="THU"> Thursday </label>
             <input
@@ -178,7 +180,7 @@ function AddEvent({ toggle: showForm, add: addEvent }) {
           </div>
 
           <div className="day">
-            <input type="checkbox" name="FRI" id="FRI" onClick={onClicked} />
+            <input type="checkbox" name="FRI" id="FRI" onChange={onClicked} checked={!data.FRI} />
 
             <label htmlFor="FRI"> Friday </label>
             <input
@@ -192,7 +194,7 @@ function AddEvent({ toggle: showForm, add: addEvent }) {
           </div>
 
           <div className="day">
-            <input type="checkbox" name="SAT" id="SAT" onClick={onClicked} />
+            <input type="checkbox" name="SAT" id="SAT" onChange={onClicked} checked={!data.SAT} />
 
             <label htmlFor="SAT"> Saturday </label>
             <input
@@ -210,11 +212,11 @@ function AddEvent({ toggle: showForm, add: addEvent }) {
           // eslint-disable-next-line no-unneeded-ternary
           disabled={Object.keys(data.schedule).length > 0 ? false : true}
         >
-          Add Event
+          Edit Event
         </button>
       </form>
     </div>
   );
 }
 
-export default AddEvent;
+export default EditEvent;

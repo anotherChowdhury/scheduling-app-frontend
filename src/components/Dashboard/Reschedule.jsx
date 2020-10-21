@@ -1,18 +1,23 @@
 import Axios from 'axios';
 import React, { useState } from 'react';
 
-function Reschedule({ id, event, name, start, date, booked, yetToConfirm, appointmentRescheduled, setReschedule }) {
+function Reschedule({
+  appointment: { id, event, name, start, date, booked, yetToConfirm, appointmentRescheduled, setReschedule },
+}) {
+  // console.log(id, event, date, start, booked, yetToConfirm);
+
   const [slots, setSlots] = useState([]);
   const [error, setError] = useState('');
   const [selectedDate, setDate] = useState('');
   const [selectedSlot, setSelectedSlot] = useState('');
   const catchDate = async (e) => {
+    e.persist();
     console.log(e.target.value);
     try {
       const response = await Axios.get(`/api/event/${event}/availability?date=${e.target.value}`);
-
       let times = response.data.slots;
       times = Object.keys(times);
+      times = times.filter((key) => response.data.slots[key] > 0);
       setError('');
       setSlots(times);
       setDate(e.target.value);
@@ -25,13 +30,16 @@ function Reschedule({ id, event, name, start, date, booked, yetToConfirm, appoin
     }
   };
 
-  const onChange = (e) => setSelectedSlot(e.target.value);
+  const onChange = (e) => {
+    console.log(e.target.value);
+    setSelectedSlot(e.target.value);
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = Axios.put(
-        `/api/reschedule/one/${id}`,
+      const response = await Axios.put(
+        `/api/appointment/reschedule/one/${id}`,
         {
           date: selectedDate,
           time: selectedSlot,
@@ -42,10 +50,11 @@ function Reschedule({ id, event, name, start, date, booked, yetToConfirm, appoin
           },
         }
       );
-
-      appointmentRescheduled(id, response.data.appointment);
+      console.log(response.data);
+      appointmentRescheduled(id, response.data.rescheduledAppointment);
       setReschedule(false);
     } catch (err) {
+      console.log(err);
       console.log(err.respone);
       setSlots([]);
       setDate('');
@@ -58,30 +67,39 @@ function Reschedule({ id, event, name, start, date, booked, yetToConfirm, appoin
       <p>{name}</p>
       <p>Current Date - {date}</p>
       <p>Current Time - {start}</p>
-      {booked.length > 0
-        ? booked.map((booking) => (
-            <span>
+      {booked && booked.length > 0
+        ? booked.map((booking, idx) => (
+            <span key={`booking${idx + 1}`}>
               {booking.clientName} {booking.clientEmail} - Confrimed -{' '}
             </span>
           ))
         : ''}
-      {yetToConfirm.length > 0
-        ? yetToConfirm.map((booking) => (
-            <span>
+      {yetToConfirm && yetToConfirm.length > 0
+        ? yetToConfirm.map((booking, idx) => (
+            <span key={`unconfirmedBooking${idx + 1}`}>
               {booking.clientName} {booking.clientEmail} - Not Confrimed{' '}
             </span>
           ))
         : ''}
 
-      <form onSubmit={handleSubmit}>
-        <input type="date" id="date" name="date" onChange={catchDate} value={selectedDate} />
+      <form onSubmit={handleSubmit} className="reschedule-form">
+        <input type="date" id="date" name="date" onChange={catchDate} required />
         {slots.length > 0 ? (
           <>
             <label htmlFor="slots">
-              Slots:
-              <select name="slots" id="slots" placeholder="Select time" onChange={onChange} value={selectedSlot}>
-                {slots.map((slot) => (
-                  <option value={slot}>{slot}</option>
+              Slots:{' '}
+              <select
+                name="slots"
+                id="slots"
+                placeholder="Select time"
+                onChange={onChange}
+                value={selectedSlot}
+                required
+              >
+                {slots.map((slot, idx) => (
+                  <option key={`options${idx + 1}`} value={slot}>
+                    {slot}
+                  </option>
                 ))}
               </select>
             </label>

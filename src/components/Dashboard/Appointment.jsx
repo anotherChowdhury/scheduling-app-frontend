@@ -3,46 +3,57 @@ import Reschedule from './Reschedule';
 
 function Appointment({
   appointment: { id, event, date, start, booked, yetToConfirm },
-  delete: { deleteAppointment },
-  reschedule: { appointmentRescheduled },
+  delete: deleteAppointment,
+  reschedule: appointmentRescheduled,
 }) {
   const [reschedule, setReschedule] = useState(false);
 
-  if (reschedule) {
+  if (reschedule == true) {
     return (
-      <Reschedule appointment={(id, date, event, start, booked, yetToConfirm, appointmentRescheduled, setReschedule)} />
+      <Reschedule
+        appointment={{
+          id: id,
+          date: date,
+          event: event,
+          start: start,
+          booked: booked,
+          yetToConfirm: yetToConfirm,
+          appointmentRescheduled: appointmentRescheduled,
+          setReschedule: setReschedule,
+        }}
+      />
     );
   }
   return (
-    <div>
+    <div className="appointment">
       <p>
         {date} - {start} -{' '}
         {booked.length
-          ? booked.map((booking) => (
-              <span>
+          ? booked.map((booking, idx) => (
+              <span key={`booking${idx + 1}`}>
                 {booking.clientName} {booking.clientEmail} - Confrimed -{' '}
-                <button type="button" onClick={() => deleteAppointment(id, booking.clientEmail)}>
-                  deleteAppointment
+                <button type="button" onClick={() => deleteAppointment(id, date, booking.clientEmail)}>
+                  Delete Appointment for this client
                 </button>
               </span>
             ))
           : ''}
         {yetToConfirm.length
-          ? yetToConfirm.map((booking) => (
-              <span>
+          ? yetToConfirm.map((booking, idx) => (
+              <span key={`unConfirmedB  ooking${idx + 1}`}>
                 {booking.clientName} {booking.clientEmail} - Not Confrimed{' '}
-                <button type="button" onClick={() => deleteAppointment(id, booking.clientEmail)}>
-                  deleteAppointment
+                <button type="button" onClick={() => deleteAppointment(id, date, booking.clientEmail)}>
+                  Delete Appointment for this client
                 </button>
               </span>
             ))
           : ''}
       </p>
 
-      <button type="button" onClick={() => deleteAppointment(id)}>
-        deleteAppointment Appointment With All Booking
+      <button type="button" onClick={() => deleteAppointment(id, date)}>
+        Delete Appointment With All Booking
       </button>
-      <button type="button" onClick={setReschedule(true)}>
+      <button type="button" onClick={() => setReschedule(true)}>
         Reschedule Appointment
       </button>
     </div>

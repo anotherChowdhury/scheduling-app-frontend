@@ -7,7 +7,6 @@ import './BookAppointment.scss';
 
 function BookAppointment(props) {
   const { id, name, price, duration, admin, schedule } = props.location.state;
-  console.log(id);
   const [slots, setSlots] = useState([]);
   const [error, setError] = useState('');
   const [confirm, setConfirm] = useState(false);
@@ -18,7 +17,7 @@ function BookAppointment(props) {
     name: '',
     email: '',
   });
-
+  console.log(data.time);
   const onChange = (e) => setData({ ...data, [e.target.name]: e.target.value });
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,7 +41,7 @@ function BookAppointment(props) {
       console.log(available);
       setError('');
       setSlots(available);
-      setData({ ...data, date: e.target.value });
+      setData({ ...data, date: e.target.value, time: '' });
     } catch (err) {
       console.log(err.response);
       setError(err.response.data.message);
@@ -89,8 +88,10 @@ function BookAppointment(props) {
             <label htmlFor="slots">
               Slots:
               <select name="time" id="time" placeholder="Select time" onChange={onChange} value={data.time} required>
-                {slots.map((slot) => (
-                  <option value={slot}>{slot}</option>
+                {slots.map((slot, idx) => (
+                  <option key={`option${idx + 1}`} value={slot}>
+                    {slot}
+                  </option>
                 ))}
               </select>
             </label>
