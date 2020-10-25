@@ -6,7 +6,7 @@
   "main": "index.jsx",
   "scripts": {
     "start": "webpack serve --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js"
+    "build": "webpack --config webpack.prod.js && cp _redirects ./build"
   },
   "keywords": [],
   "author": "",
