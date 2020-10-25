@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import EditEvent from './EditEvent';
 
 const Event = ({
-  event: { id, name, price, duration, schedule, capacity },
+  event: { id, name, price, duration, schedule, capacity, timeSlotLength },
   delete: deleteEvent,
   edit: eventEdited,
 }) => {
-  console.log(schedule);
   const [edit, setEdit] = useState(false);
 
   if (edit) {
@@ -32,6 +31,7 @@ const Event = ({
           duration: duration,
           schedule: scheduleString,
           capacity: capacity,
+          timeSlotLength: timeSlotLength,
           eventEdited: eventEdited,
           setEdit: setEdit,
         }}
@@ -39,17 +39,18 @@ const Event = ({
     );
   }
   return (
-    <div className="event" key={id}>
+    <div className="event" key={Math.random().toString(36)}>
       <p>Name: {name}</p>
       <p>Price: {price}</p>
       <p>Duration - {duration}</p>
       <p>Capacity - {capacity}</p>
+      <p>Time Slot Length - {timeSlotLength}</p>
       <p>Schedule</p>
       {Object.keys(schedule).map((day) => (
         <p key={day}>
           {day} -{' '}
-          {schedule[day].map((slot, idx) => (
-            <span key={`slot${idx + 1}`}>
+          {schedule[day].map((slot) => (
+            <span key={Math.random().toString(36)}>
               {slot.start} - {slot.end}
             </span>
           ))}

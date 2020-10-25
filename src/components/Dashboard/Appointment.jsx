@@ -30,7 +30,7 @@ function Appointment({
         {date} - {start} -{' '}
         {booked.length
           ? booked.map((booking, idx) => (
-              <span key={`booking${idx + 1}`}>
+              <span key={`booking${idx + 1}`} className="appointment-booking">
                 {booking.clientName} {booking.clientEmail} - Confrimed -{' '}
                 <button type="button" onClick={() => deleteAppointment(id, date, booking.clientEmail)}>
                   Delete Appointment for this client
@@ -40,7 +40,7 @@ function Appointment({
           : ''}
         {yetToConfirm.length
           ? yetToConfirm.map((booking, idx) => (
-              <span key={`unConfirmedB  ooking${idx + 1}`}>
+              <span key={`unConfirmedB  ooking${idx + 1}`} className="appointment-booking">
                 {booking.clientName} {booking.clientEmail} - Not Confrimed{' '}
                 <button type="button" onClick={() => deleteAppointment(id, date, booking.clientEmail)}>
                   Delete Appointment for this client

@@ -1,3 +1,6 @@
+/* eslint-disable operator-linebreak */
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable function-paren-newline */
 import Axios from 'axios';
 import React, { useState } from 'react';
 
@@ -6,7 +9,7 @@ function Reschedule({
 }) {
   // console.log(id, event, date, start, booked, yetToConfirm);
 
-  const [slots, setSlots] = useState([]);
+  const [slots, setSlots] = useState({});
   const [error, setError] = useState('');
   const [selectedDate, setDate] = useState('');
   const [selectedSlot, setSelectedSlot] = useState('');
@@ -15,11 +18,8 @@ function Reschedule({
     console.log(e.target.value);
     try {
       const response = await Axios.get(`/api/event/${event}/availability?date=${e.target.value}`);
-      let times = response.data.slots;
-      times = Object.keys(times);
-      times = times.filter((key) => response.data.slots[key] > 0);
-      setError('');
-      setSlots(times);
+      console.log(response.data.slots);
+      setSlots(response.data.slots);
       setDate(e.target.value);
       setSelectedSlot('');
     } catch (err) {
@@ -84,7 +84,7 @@ function Reschedule({
 
       <form onSubmit={handleSubmit} className="reschedule-form">
         <input type="date" id="date" name="date" onChange={catchDate} required />
-        {slots.length > 0 ? (
+        {slots && Object.keys(slots).length > 0 ? (
           <>
             <label htmlFor="slots">
               Slots:{' '}
@@ -96,11 +96,18 @@ function Reschedule({
                 value={selectedSlot}
                 required
               >
-                {slots.map((slot, idx) => (
-                  <option key={`options${idx + 1}`} value={slot}>
-                    {slot}
-                  </option>
-                ))}
+                {
+                  // eslint-disable-next-line no-confusing-arrow
+                  Object.keys(slots).map((slot, idx) =>
+                    slots[slot].capacity > 0 ? (
+                      <option key={`options${idx + 1}`} value={slot}>
+                        {slot} - {slots[slot].capacity}
+                      </option>
+                    ) : (
+                      ''
+                    )
+                  )
+                }
               </select>
             </label>
             <button type="submit">Reschedule Appoitment</button>

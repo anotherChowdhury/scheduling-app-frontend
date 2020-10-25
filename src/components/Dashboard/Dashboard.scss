@@ -1,5 +1,72 @@
+.dashboard-container {
+  display: flex;
+  width: 100vw;
+}
+
+.sidebar {
+  width: 15vw;
+  background-color: black;
+  height: 90vh;
+}
+
+.sidebar button {
+  width: 100%;
+  padding: 20px;
+  border: none;
+  background-color: black;
+  color: aliceblue;
+}
+
+.sidebar button:hover {
+  background-color: white;
+  color: black;
+}
+
+.content {
+  width: 85vw;
+  height: 90vh;
+}
+
+.content h1 {
+  text-align: center;
+}
+
+.content .stat {
+  display: flex;
+  margin: 0 10%;
+}
+
+.content .box {
+  width: 20vw;
+  height: 2vw;
+  margin: 0 10px;
+  box-sizing: border-box;
+  border: 1px solid black;
+  text-align: center;
+}
 .events {
   margin: 10px 0;
+}
+
+.add-event-form .flex {
+  display: flex;
+  margin: 0 5vw;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.add-event .left {
+  width: 15vw;
+  margin: 0 5vw;
 }
 
 .add-event {
@@ -48,5 +115,26 @@
 }
 
 .appointment {
+  margin: 10px;
+}
+
+.dates {
+  margin: 10px;
+  display: block;
+  border: 1px solid blue;
+  width: 40%;
+  height: 20%;
+}
+
+.slots {
+  margin: 10px;
+  display: block;
+  border: 1px solid red;
+  width: 4 0%;
+  height: 20%;
+}
+
+.appointment-booking {
+  display: block;
   margin: 10px;
 }

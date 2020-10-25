@@ -8,7 +8,7 @@ module.exports = {
   //   filename: 'main.[contentHash].js', // change only when a code changes. Hence, browser cn cache the file and know when to update it again as the file name changes
   //   path: path.resolve(__dirname, 'build'),
   // },
-  plugins: [new ESLintPlugin()],
+  // plugins: [new ESLintPlugin()],
   // ...
   module: {
     // loaders to use and rules for them like which file to target and stuff

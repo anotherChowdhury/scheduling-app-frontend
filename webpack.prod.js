@@ -31,7 +31,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' }),
-    new CleanWebpackPlugin(),
+    new CleanWebpackPlugin({ verbose: true }),
   ], // delete the previous build and create the new build
   module: {
     rules: [

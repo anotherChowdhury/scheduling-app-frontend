@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import './App.scss';
 import AllEvents from './components/Client/AllEvents';
 import BookAppointment from './components/Client/BookAppointment';
@@ -14,9 +14,9 @@ function App() {
     <Router>
       <Header />
       <Switch>
-        <Route path="/" exact>
-          <Register />
-        </Route>
+        <Route path="/" exact component={Register} />
+        {/* <Register />
+        </Route> */}
         <Route path="/register" exact>
           <Register />
         </Route>

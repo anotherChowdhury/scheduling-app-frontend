@@ -1,3 +1,6 @@
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable no-confusing-arrow */
+/* eslint-disable function-paren-newline */
 /* eslint-disable nonblock-statement-body-position */
 /* eslint-disable react/destructuring-assignment */
 import Axios from 'axios';
@@ -7,9 +10,10 @@ import './BookAppointment.scss';
 
 function BookAppointment(props) {
   const { id, name, price, duration, admin, schedule } = props.location.state;
-  const [slots, setSlots] = useState([]);
+  const [slots, setSlots] = useState({});
   const [error, setError] = useState('');
   const [confirm, setConfirm] = useState(false);
+  // const [slotsWithID, setSlotsWithId] = useState(false);
 
   const [data, setData] = useState({
     date: '',
@@ -22,8 +26,16 @@ function BookAppointment(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(data);
-      await Axios.post('/api/appointment/new', { ...data, event: id });
+      console.log(data.time);
+      const timeSlot = slots[data.time];
+      let postData = {};
+      if (timeSlot.id) {
+        postData = { ...data, id: timeSlot.id, event: id };
+      } else {
+        postData = { ...data, event: id };
+      }
+
+      await Axios.post('/api/appointment/new', postData);
       setConfirm(true);
     } catch (err) {
       console.log(err.response);
@@ -35,12 +47,10 @@ function BookAppointment(props) {
     console.log(e.target.value);
     try {
       const response = await Axios.get(`/api/event/${id}/availability?date=${e.target.value}`);
-      const keys = Object.keys(response.data.slots);
-      console.log(response);
-      const available = keys.filter((key) => response.data.slots[key] > 0);
-      console.log(available);
+      //const available = keys.filter((key) => response.data.slots[key].capacity > 0);
       setError('');
-      setSlots(available);
+      console.log(Object.keys(response.data.slots));
+      setSlots(response.data.slots);
       setData({ ...data, date: e.target.value, time: '' });
     } catch (err) {
       console.log(err.response);
@@ -69,7 +79,7 @@ function BookAppointment(props) {
           <p key={day}>
             {day} -{' '}
             {schedule[day].map((slot, idx) => (
-              <span key={idx}>
+              <span key={`option${idx + 1}`}>
                 {slot.start} - {slot.end}
                 {'  '}
               </span>
@@ -83,16 +93,20 @@ function BookAppointment(props) {
           Select Date:
           <input type="date" name="date" id="date" onChange={catchDate} required />
         </label>
-        {slots.length > 0 ? (
+        {slots && Object.keys(slots).length > 0 ? (
           <>
             <label htmlFor="slots">
               Slots:
               <select name="time" id="time" placeholder="Select time" onChange={onChange} value={data.time} required>
-                {slots.map((slot, idx) => (
-                  <option key={`option${idx + 1}`} value={slot}>
-                    {slot}
-                  </option>
-                ))}
+                {Object.keys(slots).map((slot, idx) =>
+                  slots[slot].capacity > 0 ? (
+                    <option key={`option${idx + 1}`} value={slot}>
+                      {slot} - {slots[slot].capacity}
+                    </option>
+                  ) : (
+                    ''
+                  )
+                )}
               </select>
             </label>
 

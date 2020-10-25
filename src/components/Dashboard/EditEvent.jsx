@@ -4,15 +4,16 @@ import React, { useState } from 'react';
 import Axios from 'axios';
 
 // eslint-disable-next-line no-unused-vars
-function EditEvent({ event: { id, name, price, duration, schedule: schedules, capacity, eventEdited, setEdit } }) {
-  console.log(name, price, duration, schedules, capacity);
-
+function EditEvent({
+  event: { id, name, price, duration, timeSlotLength, schedule: schedules, capacity, eventEdited, setEdit },
+}) {
   const [data, setData] = useState({
     name: name,
     price: price,
     duration: duration,
     capacity: capacity,
     schedule: schedules,
+    timeSlotLength: timeSlotLength || duration,
     SUN: !schedules.SUN,
     MON: !schedules.MON,
     TUE: !schedules.TUE,
@@ -24,13 +25,10 @@ function EditEvent({ event: { id, name, price, duration, schedule: schedules, ca
 
   const onChange = (e) => setData({ ...data, [e.target.name]: e.target.value });
   const onClicked = (e) => {
-    console.log(data[e.target.name]);
     if (data.schedule[e.target.name]) {
       const { schedule } = data;
       delete schedule[e.target.name];
-      console.log(schedule);
       setData({ ...data, schedule: schedule, [e.target.name]: true });
-      console.log(schedule);
     } else {
       setData({ ...data, [e.target.name]: !data[e.target.name] });
     }
@@ -56,7 +54,6 @@ function EditEvent({ event: { id, name, price, duration, schedule: schedules, ca
       schedule[key] = slots;
     });
 
-    console.log(schedule);
     try {
       const response = await Axios.put(
         `/api/event/${id}`,
@@ -66,6 +63,7 @@ function EditEvent({ event: { id, name, price, duration, schedule: schedules, ca
           duration: data.duration,
           capacity: data.capacity,
           schedule: schedule,
+          timeSlotLength: data.timeSlotLength,
         },
         {
           headers: {
@@ -73,7 +71,6 @@ function EditEvent({ event: { id, name, price, duration, schedule: schedules, ca
           },
         }
       );
-      console.log(response.data.updatedEvent);
       eventEdited(response.data.updatedEvent);
       setEdit(false);
     } catch (err) {
@@ -96,6 +93,16 @@ function EditEvent({ event: { id, name, price, duration, schedule: schedules, ca
             placeholder="Duration"
             name="duration"
             value={data.duration}
+            onChange={onChange}
+            required
+          />
+        </div>
+        <div className="form-element">
+          <input
+            type="number"
+            placeholder="Duration"
+            name="timeSlotLenght"
+            value={data.timeSlotLength}
             onChange={onChange}
             required
           />
@@ -213,6 +220,9 @@ function EditEvent({ event: { id, name, price, duration, schedule: schedules, ca
           disabled={Object.keys(data.schedule).length > 0 ? false : true}
         >
           Edit Event
+        </button>
+        <button type="button" onClick={() => setEdit(false)}>
+          Cancel
         </button>
       </form>
     </div>

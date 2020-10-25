@@ -4,4 +4,4 @@ import App from './App';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App />, document.querySelector('#app'));
