@@ -15,7 +15,7 @@ function AllEvents({ match }) {
   useEffect(() => {
     async function getData() {
       try {
-        const response = await Axios.get(`/api/event/${admin}/all`);
+        const response = await Axios.get(`https://afternoon-sea-95120.herokuapp.com/event/${admin}/all`);
         console.log(response.data.events);
         setLoading(false);
         setEvents(response.data.events);

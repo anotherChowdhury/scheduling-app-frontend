@@ -20,7 +20,7 @@ function Unavailable({ dates, slots, update: unavailabilityAdded }) {
     e.preventDefault();
     console.log(data);
     const response = await Axios.post(
-      '/api/owner/unavailable',
+      'https://afternoon-sea-95120.herokuapp.com/owner/unavailable',
       {
         startDate: data.startDate,
         endDate: data.endDate,

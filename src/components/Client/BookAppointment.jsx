@@ -35,7 +35,7 @@ function BookAppointment(props) {
         postData = { ...data, event: id };
       }
 
-      await Axios.post('/api/appointment/new', postData);
+      await Axios.post('https://afternoon-sea-95120.herokuapp.com/appointment/new', postData);
       setConfirm(true);
     } catch (err) {
       console.log(err.response);
@@ -46,7 +46,9 @@ function BookAppointment(props) {
     e.persist();
     console.log(e.target.value);
     try {
-      const response = await Axios.get(`/api/event/${id}/availability?date=${e.target.value}`);
+      const response = await Axios.get(
+        `https://afternoon-sea-95120.herokuapp.com/event/${id}/availability?date=${e.target.value}`
+      );
       //const available = keys.filter((key) => response.data.slots[key].capacity > 0);
       setError('');
       console.log(Object.keys(response.data.slots));

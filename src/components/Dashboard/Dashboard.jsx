@@ -31,7 +31,7 @@ function Dashboard() {
 
   useEffect(() => {
     async function getData() {
-      const response = await Axios.get('/api/owner/dashboard', {
+      const response = await Axios.get('https://afternoon-sea-95120.herokuapp.com/owner/dashboard', {
         headers: { Authorization: localStorage.getItem('token') },
       });
       if (response.data.message) {
@@ -106,12 +106,13 @@ function Dashboard() {
 
   const deleteAppointment = async (id, date, email) => {
     try {
+      console.log(email);
       let emailValue = '';
       if (email) emailValue = `?email=${email}`;
-      await Axios.delete(`/api/appointment/${id}${emailValue}`);
+      await Axios.delete(`https://afternoon-sea-95120.herokuapp.com/appointment/${id}${emailValue}`);
       let currentDate = new Date();
       currentDate = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
-      if (emailValue) {
+      if (!email) {
         if (currentDate == date) {
           const appointmentsForTheDay = [];
           const allAppointments = data.allAppointments.filter((appointment) => {
@@ -140,9 +141,7 @@ function Dashboard() {
             allAppointments: allAppointments,
           });
         }
-      }
-
-      if (currentDate == date) {
+      } else if (currentDate == date) {
         const appointmentsForTheDay = [];
         const allAppointments = data.allAppointments.map((appointment) => {
           if (appointment.id == id) {
@@ -156,10 +155,13 @@ function Dashboard() {
         setData({ ...data, allAppointments, appointmentsForTheDay });
       } else {
         const allAppointments = data.allAppointments.map((appointment) => {
+          console.log(emailValue);
           if (appointment.id == id) {
-            appointment.booked = appointment.booked.filter((booking) => booking.clientEmail !== emailValue);
-            appointment.yetToConfirm = appointment.yetToConfirm.filter((booking) => booking.clientEmail !== emailValue);
+            console.log(appointment);
+            appointment.booked = appointment.booked.filter((booking) => booking.clientEmail !== email);
+            appointment.yetToConfirm = appointment.yetToConfirm.filter((booking) => booking.clientEmail !== email);
           }
+          console.log(appointment);
           return appointment;
         });
 
@@ -172,7 +174,7 @@ function Dashboard() {
 
   const deleteEvent = async (id) => {
     try {
-      await Axios.delete(`/api/event/${id}`);
+      await Axios.delete(`https://afternoon-sea-95120.herokuapp.com/event/${id}`);
       const events = data.events.filter((event) => event.id !== id);
       const allAppointments = data.allAppointments.filter((appointment) => appointment.event !== id);
 
@@ -293,7 +295,7 @@ function Dashboard() {
         {data.showAll
           ? data.allAppointments.map((appointment) => (
               <Appointment
-                key={appointment.id}
+                key={Math.random().toString(36)}
                 appointment={appointment}
                 delete={deleteAppointment}
                 reschedule={appointmentRescheduled}
@@ -304,7 +306,7 @@ function Dashboard() {
         {data.showToday
           ? data.appointmentsFortheDay.map((appointment) => (
               <Appointment
-                key={appointment.id}
+                key={Math.random().toString(36)}
                 appointment={appointment}
                 delete={deleteAppointment}
                 reschedule={appointmentRescheduled}

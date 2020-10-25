@@ -39,7 +39,7 @@ function Reschedule({
     e.preventDefault();
     try {
       const response = await Axios.put(
-        `/api/appointment/reschedule/one/${id}`,
+        `https://afternoon-sea-95120.herokuapp.com/appointment/reschedule/one/${id}`,
         {
           date: selectedDate,
           time: selectedSlot,

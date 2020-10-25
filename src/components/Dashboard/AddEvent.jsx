@@ -61,7 +61,7 @@ function AddEvent({ toggle: showForm, add: addEvent }) {
     console.log(schedule);
     try {
       const response = await Axios.post(
-        '/api/event/new',
+        'https://afternoon-sea-95120.herokuapp.com/event/new',
         {
           name: data.name,
           price: data.price,

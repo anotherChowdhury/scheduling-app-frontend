@@ -56,7 +56,7 @@ function EditEvent({
 
     try {
       const response = await Axios.put(
-        `/api/event/${id}`,
+        `https://afternoon-sea-95120.herokuapp.com/event/${id}`,
         {
           name: data.name,
           price: data.price,
@@ -97,16 +97,7 @@ function EditEvent({
             required
           />
         </div>
-        <div className="form-element">
-          <input
-            type="number"
-            placeholder="Duration"
-            name="timeSlotLenght"
-            value={data.timeSlotLength}
-            onChange={onChange}
-            required
-          />
-        </div>
+
         <div className="form-element">
           <input
             type="number"
@@ -115,7 +106,17 @@ function EditEvent({
             value={data.capacity}
             onChange={onChange}
             required
-          />
+          />{' '}
+          <div className="form-element">
+            <input
+              type="number"
+              placeholder="Duration"
+              name="timeSlotLength"
+              value={data.timeSlotLength}
+              onChange={onChange}
+              required
+            />
+          </div>
         </div>
         <div className="form-element">
           <div className="day">
