@@ -30,7 +30,7 @@ function Register() {
     const { name, email, password } = data;
     console.log({ name, email, password });
     try {
-      const response = await axios.post('/api/owner/signup', {
+      const response = await axios.post('https://afternoon-sea-95120.herokuapp.com/owner/signup', {
         name,
         email,
         password,
@@ -53,22 +53,8 @@ function Register() {
         {data.warning ? <p className="warning">Passwords don't match</p> : ''}
         {data.error ? <p className="warning">{data.error}</p> : ''}
 
-        <input
-          type="text"
-          placeholder="Name"
-          name="name"
-          required
-          onChange={onChange}
-          value={data.name}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          name="email"
-          onChange={onChange}
-          value={data.email}
-          required
-        />
+        <input type="text" placeholder="Name" name="name" required onChange={onChange} value={data.name} />
+        <input type="email" placeholder="Email" name="email" onChange={onChange} value={data.email} required />
         <input
           type="password"
           placeholder="Password"

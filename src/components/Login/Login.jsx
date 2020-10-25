@@ -20,7 +20,7 @@ function Login() {
     const { email, password } = data;
     console.log(email, password);
 
-    const response = await Axios.post('/api/owner/login', {
+    const response = await Axios.post('https://afternoon-sea-95120.herokuapp.com/owner/login', {
       email,
       password,
     });
@@ -37,14 +37,7 @@ function Login() {
     <div className="login">
       <form className="login-form" onSubmit={onSubmit}>
         {data.error ? <p className="warning">Wrong Credentials </p> : ''}
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={onChange}
-          value={data.email}
-          required
-        />
+        <input type="email" name="email" placeholder="Email" onChange={onChange} value={data.email} required />
         <input
           type="password"
           name="password"
