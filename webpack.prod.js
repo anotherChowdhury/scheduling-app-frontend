@@ -6,6 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const LinkTypePlugin = require('html-webpack-link-type-plugin').HtmlWebpackLinkTypePlugin;
 
 module.exports = merge(common, {
   mode: 'production', //  minify or compress
@@ -32,6 +33,9 @@ module.exports = merge(common, {
   plugins: [
     new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' }),
     new CleanWebpackPlugin({ verbose: true }),
+    new LinkTypePlugin({
+      '**/*.css': 'text/css',
+    }),
   ], // delete the previous build and create the new build
   module: {
     rules: [
