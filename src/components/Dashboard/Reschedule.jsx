@@ -17,7 +17,9 @@ function Reschedule({
     e.persist();
     console.log(e.target.value);
     try {
-      const response = await Axios.get(`/api/event/${event}/availability?date=${e.target.value}`);
+      const response = await Axios.get(
+        `https://afternoon-sea-95120.herokuapp.com/event/${event}/availability?date=${e.target.value}`
+      );
       console.log(response.data.slots);
       setSlots(response.data.slots);
       setDate(e.target.value);
