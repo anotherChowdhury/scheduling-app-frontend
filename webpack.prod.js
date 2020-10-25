@@ -34,7 +34,14 @@ module.exports = merge(common, {
     new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' }),
     new CleanWebpackPlugin({ verbose: true }),
     new LinkTypePlugin({
-      '**/*.css': 'text/css',
+      '*.css': 'text/css',
+      '*.js': 'text/javascript',
+      '*.png': 'image/png',
+      '*.jpg': 'image/jpeg',
+      '*.jpeg': 'image/jpeg',
+      '*.gif': 'image/gif',
+      '*.webp': 'image/webp',
+      '*.bmp': 'image/bmp',
     }),
   ], // delete the previous build and create the new build
   module: {
