@@ -5,13 +5,12 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const LinkTypePlugin = require('html-webpack-link-type-plugin').HtmlWebpackLinkTypePlugin;
-
 module.exports = merge(common, {
   mode: 'production', //  minify or compress
   // devtool: 'hidden', // won't add evals in the final file
   output: {
     // where and in what name webpack bundle the code
-    filename: '[name].[contenthash].js', // change only when a code changes. Hence, browser cn cache the file and know when to update it again as the file name changes
+    filename: 'main.js', // change only when a code changes. Hence, browser cn cache the file and know when to update it again as the file name changes
     path: path.resolve(__dirname, 'build'),
   },
   optimization: {
